@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AES Encryption/Decryption</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.8em;
+        }
+        .error {
+            border: 1px solid red;
+        }
+    </style>
+    <script>
+        function validateText() {
+            const text = document.getElementById('text').value;
+            if (document.getElementById('action').value === 'decrypt' && text && !text.includes(':')) {
+                return 'For decryption, text must be in the format IV:ciphertext.';
+            }
+            return null;
+        }
+
+        function validateEncryptionKey() {
+            const encryptionKey = document.getElementById('encryptionKey').value;
+            const keySize = document.getElementById('keySize').value;
+            const keyLengths = {
+                '128': 16,
+                '192': 24,
+                '256': 32
+            };
+            const expectedKeyLength = keyLengths[keySize];
+            return encryptionKey.length === expectedKeyLength ? null : `Encryption key length must be ${expectedKeyLength} bytes for AES-${keySize}.`;
+        }
+
+        function validateIV() {
+            const iv = document.getElementById('iv').value.trim();
+            return iv.length === 0 || iv.length === 16 ? null : 'IV must be 16 bytes for AES.';
+        }
+
+        function validateIVFormat() {
+            const iv = document.getElementById('iv').value.trim();
+            if (iv.length > 0 && iv.length !== 16) {
+                return 'IV must be 16 bytes for AES.';
+            }
+            return null;
+        }
+
+        function validateInputs() {
+            const textError = validateText();
+            const encryptionKeyError = validateEncryptionKey();
+            const ivLengthError = validateIV();
+            const ivFormatError = validateIVFormat();
+
+            displayError('text', textError);
+            displayError('encryptionKey', encryptionKeyError);
+            displayError('iv', ivLengthError || ivFormatError || ivMismatchError());
+
+            if (textError || encryptionKeyError || ivLengthError || ivFormatError) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function ivMismatchError() {
+            const text = document.getElementById('text').value;
+            const iv = document.getElementById('iv').value.trim();
+            if (document.getElementById('action').value === 'decrypt' && text && iv && !iv.includes(':')) {
+                return 'IV in text and iv dont match.';
+            }
+            return null;
+        }
+
+        function displayError(inputId, errorMessage) {
+            const inputElement = document.getElementById(inputId);
+            const errorElement = document.getElementById(`${inputId}-error`);
+            if (errorMessage) {
+                inputElement.classList.add('error');
+                errorElement.textContent = errorMessage;
+            } else {
+                inputElement.classList.remove('error');
+                errorElement.textContent = '';
+            }
+        }
+
+        async function encryptDecrypt(action) {
+            if (!validateInputs()) {
+                return;
+            }
+
+            const text = document.getElementById('text').value;
+            const encryptionKey = document.getElementById('encryptionKey').value;
+            const iv = document.getElementById('iv').value.trim();
+            const keySize = document.getElementById('keySize').value;
+
+            const requestData = { text, encryptionKey, keySize };
+            if (iv) {
+                requestData.iv = iv;
+            }
+
+            const response = await fetch(`/${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            const result = await response.json();
+            if (result.error) {
+                alert(`Error: ${result.error}`);
+            } else {
+                document.getElementById('output').value = action === 'encrypt' ? result.encryptedText : result.decryptedText;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>AES Encryption/Decryption</h1>
+    <div>
+        <label for="text">Text:</label><br>
+        <textarea id="text" rows="4" cols="50" oninput="validateInputs()"></textarea>
+        <span id="text-error" class="error-message"></span><br>
+        <span id="text-format-error" class="error-message"></span><br>
+
+        <label for="encryptionKey">Encryption Key:</label><br>
+        <input type="text" id="encryptionKey" oninput="validateInputs()">
+        <span id="encryptionKey-error" class="error-message"></span><br>
+
+        <label for="iv">IV (optional):</label><br>
+        <input type="text" id="iv" oninput="validateInputs()">
+        <span id="iv-error" class="error-message"></span><br>
+        <span id="iv-mismatch-error" class="error-message"></span><br>
+
+        <label for="keySize">Key Size:</label><br>
+        <select id="keySize" onchange="validateInputs()">
+            <option value="128">AES-128-CBC</option>
+            <option value="192">AES-192-CBC</option>
+            <option value="256">AES-256-CBC</option>
+        </select><br><br>
+
+        <input type="hidden" id="action" value="">
+        <button onclick="document.getElementById('action').value='encrypt'; encryptDecrypt('encrypt')">Encrypt</button>
+        <button onclick="document.getElementById('action').value='decrypt'; encryptDecrypt('decrypt')">Decrypt</button><br><br>
+
+        <label for="output">Output:</label><br>
+        <textarea id="output" rows="4" cols="50" readonly></textarea>
+    </div>
+</body>
+</html>
