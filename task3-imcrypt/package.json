@@ -1,0 +1,55 @@
+{
+  "name": "imcrypt",
+  "description": "An image encryption node-js cli",
+  "version": "1.0.1",
+  "license": "MIT",
+  "bin": {
+    "imcrypt": "index.js"
+  },
+  "author": "theninza <niks.a3198@gmail.com> (https://theninza.me)",
+  "keywords": [
+    "imcrypt",
+    "theninza",
+    "encrypt",
+    "decrypt",
+    "image",
+    "cryptography",
+    "nodejs",
+    "cli"
+  ],
+  "files": [
+    "index.js",
+    "utils"
+  ],
+  "scripts": {
+    "format": "prettier --write \"./**/*.{js,json}\"",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "cli-alerts": "^1.2.2",
+    "cli-handle-error": "^4.4.0",
+    "cli-handle-unhandled": "^1.1.1",
+    "cli-meow-help": "^2.0.2",
+    "cli-welcome": "^2.2.3",
+    "fs": "^0.0.1-security",
+    "jimp": "^0.16.13",
+    "meow": "^13.2.0",
+    "ora": "^6.3.1",
+    "path": "^0.12.7",
+    "readline": "^1.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheNinza/imcrypt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheNinza/imcrypt/issues"
+  },
+  "homepage": "https://github.com/TheNinza/imcrypt#readme",
+  "type": "module"
+}
