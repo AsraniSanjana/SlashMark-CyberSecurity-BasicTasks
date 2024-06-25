@@ -1,5 +1,0 @@
-npm init -y
-npm install chalk cli-alerts jimp ora path readline fs meow cli-meow-help cli-welcome cli-handle-unhandled
-
-node index.js --encrypt koya.jpg --outputImageFileName koya_encrypted.jpg --outputKeyFileName encryption_key.txt
-node index.js --decrypt koya_encrypted.jpg --key encryption_key.txt --outputImageFileName koya_decrypted.png
