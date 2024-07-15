@@ -1,0 +1,10 @@
+the file /dev/input/event0 doesn't exist on a windows system. This path is typically used in Linux environments to access input devices
+
+On Windows, capturing low-level keyboard events is not as straightforward as reading from /dev/input. We would need to use a library that abstracts these platform-specific details for us.
+
+One such library is node-windows, which allows for interaction with Windows services and devices. Another option is iohook, a Node.js global keyboard and mouse listener. we will use node-global-key-listener for now.
+
+
+npm install node-global-key-listener
+npm init -y
+node index.js
